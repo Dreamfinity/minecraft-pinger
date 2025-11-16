@@ -30,6 +30,11 @@ servers.
 - 📦 No external dependencies required
 - 🌐 Supports custom host and port configurations
 
+## Server healthcheck usage
+
+It can be easily used as server healthcheck - on success program prints server response and exit with 0 status. 
+If error occured then program exit with `-1` (or `255`, depends on shell, OS, kernel - but mainly that it is non-zero) status
+
 ## Installation
 
 ### Download Pre-built Binaries (Recommended)
