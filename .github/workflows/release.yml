@@ -56,7 +56,7 @@ jobs:
             version="${{ env.VERSION }}"
           fi
           
-          dirname="$binary_name-$version-${{ matrix.platform.target }}-${{ matrix.dist_type }}"
+          dirname="$binary_name-$version-${{ matrix.platform.target }}"
           mkdir "$dirname"
           
           if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
