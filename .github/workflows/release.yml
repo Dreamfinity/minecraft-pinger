@@ -1,0 +1,82 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build app
+    strategy:
+      matrix:
+        platform:
+          - os: "windows-latest"
+            target: "x86_64-pc-windows-gnu"
+          - os: "ubuntu-latest"
+            target: "x86_64-unknown-linux-gnu"
+          - os: "macos-latest"
+            target: x86_64-apple-darwin
+
+    runs-on: ${{ matrix.platform.os }}
+
+    steps:
+      - name: Cloning
+        uses: actions/checkout@v4
+
+      - name: Get the release version from the tag
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Setup toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: "true"
+
+      - name: Build binary
+        uses: dtolnay/rust-toolchain@stable
+      - run: rustup target add ${{ matrix.platform.target }}
+      - run: cargo build --release --target ${{ matrix.platform.target }}
+
+      - name: Build archive
+        shell: bash
+        run: |
+          binary_name="minecraft-pinger"
+          
+          if [ "${{ env.VERSION }}" = "refs/heads/master" ]; then
+            version=latest
+          else 
+            version="${{ env.VERSION }}"
+          fi
+          
+          dirname="$binary_name-$version-${{ matrix.platform.target }}-${{ matrix.dist_type }}"
+          mkdir "$dirname"
+          
+          if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
+            mv "target/${{ matrix.platform.target }}/release/$binary_name.exe" "$dirname"
+          else
+            mv "target/${{ matrix.platform.target }}/release/$binary_name" "$dirname"
+          fi
+
+          if [ "${{ matrix.platform.os }}" = "windows-latest" ]; then
+            7z a -t7z "$dirname.7z" "$dirname"
+            echo "ASSET=$dirname.7z" >> $GITHUB_ENV
+          else
+            tar -czf "$dirname.tar.gz" "$dirname"
+            echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
+          fi
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          append_body: true
+          make_latest: true
+          files: |
+            ${{ env.ASSET }}
