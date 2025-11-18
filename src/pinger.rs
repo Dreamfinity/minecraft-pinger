@@ -3,6 +3,8 @@ use std::io::Read;
 
 const DEFAULT_PORT: u16 = 25565;
 const DEFAULT_HOST: &str = "127.0.0.1";
+const PRINT_RESPONSE_ARG: &str = "--print";
+const PRINT_RESPONSE_ARG_SHORT: &str = "-p";
 
 pub(crate) fn pinger() -> Result<(), std::io::Error> {
     let args: Vec<String> = std::env::args().collect();
@@ -15,6 +17,9 @@ pub(crate) fn pinger() -> Result<(), std::io::Error> {
         if let Some((maybe_addr, maybe_port)) = maybe_addr.split_once(":") {
             server_addr = maybe_addr;
             server_port = maybe_port.parse::<u16>().unwrap_or(DEFAULT_PORT);
+        } else {
+            server_addr = maybe_addr;
+            server_port = DEFAULT_PORT;
         }
     }
 
@@ -37,6 +42,10 @@ pub(crate) fn pinger() -> Result<(), std::io::Error> {
 
     let mut server_info: Vec<u8> = vec![0u8; server_info_len as usize];
     stream.read_exact(&mut server_info)?;
-    println!("{:?}", String::from_utf8_lossy(server_info.as_ref()));
+    if args.contains(&PRINT_RESPONSE_ARG.to_string())
+        || args.contains(&PRINT_RESPONSE_ARG_SHORT.to_string())
+    {
+        println!("{:?}", String::from_utf8_lossy(server_info.as_ref()));
+    }
     Ok(())
 }

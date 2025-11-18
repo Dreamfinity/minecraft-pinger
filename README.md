@@ -84,66 +84,69 @@ sudo mv minecraft-pinger-{version}-x86_64-apple-darwin/minecraft-pinger /usr/loc
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/Dreamfinity/minecraft-pinger.git
-cd minecraft-pinger
-```
+    ```bash
+    git clone https://github.com/Dreamfinity/minecraft-pinger.git
+    cd minecraft-pinger
+    ```
 
 2. Build the project:
 
-``````bash
-cargo build --release
-``````
+    ```bash
+    cargo build --release
+    ```
 
-3. The executable will be available at ``target/release/minecraft-pinger``
+3. The executable will be available at `target/release/minecraft-pinger`
 
-### Quick Install from Source
+### Quick Installation from Source
 
-``````bash
+```bash
 cargo install --path .
-``````
+```
 
 ## Usage
 
+You can use flag `--print` (or `-p`) to print server response. Without it program just exit with proper status code as
+described above
+
 ### Basic Usage
 
-Ping a local server (defaults to ``127.0.0.1:25565``):
+Ping a local server (defaults to `127.0.0.1:25565`):
 
-``````bash
+```bash
 minecraft-pinger
-``````
+```
 
 ### Ping a Specific Server
 
-``````bash
+```bash
 minecraft-pinger example.com:25565
-``````
+```
 
 ### Examples
 
 Ping a server with default port (25565):
 
-``````bash
+```bash
 minecraft-pinger mc.hypixel.net
-``````
+```
 
 Ping a server with custom port:
 
-``````bash
+```bash
 minecraft-pinger myserver.com:25566
-``````
+```
 
 Ping localhost:
 
-``````bash
+```bash
 minecraft-pinger localhost:25565
-``````
+```
 
 ## Output
 
 The tool outputs the raw JSON response from the Minecraft server, which typically includes:
 
-``````json
+```json
 {
   "version": {
     "name": "1.20.1",
@@ -157,7 +160,7 @@ The tool outputs the raw JSON response from the Minecraft server, which typicall
     "text": "A Minecraft Server"
   }
 }
-``````
+```
 
 ## How It Works
 
@@ -178,7 +181,7 @@ The implementation uses custom packet readers and writers to handle Minecraft's 
 
 ## Project Structure
 
-``````
+```
 minecraft-pinger/
 ├── src/
 │   ├── main.rs                    # Entry point
@@ -188,7 +191,7 @@ minecraft-pinger/
 │   └── converter.rs               # Data conversion utilities
 ├── Cargo.toml
 └── README.md
-``````
+```
 
 ## Contributing
 
