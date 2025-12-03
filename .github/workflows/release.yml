@@ -61,7 +61,9 @@ jobs:
 
       - name: Build binary
         uses: dtolnay/rust-toolchain@stable
+
       - run: rustup target add ${{ matrix.platform.target }}
+
       - run: cargo build --release --target ${{ matrix.platform.target }}
 
       - name: Build archive
@@ -93,6 +95,7 @@ jobs:
           fi
 
       - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           append_body: true
