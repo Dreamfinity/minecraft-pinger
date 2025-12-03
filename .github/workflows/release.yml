@@ -4,6 +4,24 @@ on:
   push:
     tags:
       - "[v]?[0-9]+.[0-9]+.[0-9]+"
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: environment
 
 permissions:
   contents: write
@@ -39,6 +57,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: "true"
+          add-rust-environment-hash-key: "false"
 
       - name: Build binary
         uses: dtolnay/rust-toolchain@stable
