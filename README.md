@@ -29,11 +29,14 @@ servers.
 - 🔌 Direct TCP connection to Minecraft servers
 - 📦 No external dependencies required
 - 🌐 Supports custom host and port configurations
+- ⏱️ Configurable connection timeout
+- 🔍 Verbose output mode for debugging
 
 ## Server healthcheck usage
 
-It can be easily used as server healthcheck - on success program prints server response and exit with 0 status. 
-If error occured then program exit with `-1` (or `255`, depends on shell, OS, kernel - but mainly that it is non-zero) status
+It can be easily used as a server health check - on success program printing server response and exit with 0 status.
+If error occurred then program exit with `-1` (or `255`, depends on shell, OS, kernel - but mainly that it is non-zero)
+status
 
 ## Installation
 
@@ -108,10 +111,15 @@ sudo mv minecraft-pinger-{version}-x86_64-apple-darwin/minecraft-pinger /usr/loc
 cargo install --path .
 ```
 
-## Usage
+### Command-Line Options
 
-You can use flag `--print` (or `-p`) to print server response. Without it program just exit with proper status code as
-described above
+The tool supports the following command-line options:
+
+- **Positional argument**: Server address (format: `host:port` or just `host`)
+- `-h, --host <HOST>`: Specify the server hostname or IP address
+- `-p, --port <PORT>`: Specify the server port (default: 25565)
+- `-v, --verbose`: Print the server response (verbose mode)
+- `-t, --timeout <SECONDS>`: Set connection timeout in seconds (default: 30)
 
 ### Basic Usage
 
@@ -129,7 +137,7 @@ minecraft-pinger example.com:25565
 
 ### Examples
 
-Ping a server with default port (25565):
+Ping a server with the default port (`25565`):
 
 ```bash
 minecraft-pinger mc.hypixel.net
@@ -147,9 +155,16 @@ Ping localhost:
 minecraft-pinger localhost:25565
 ```
 
+Combined named args:
+
+```bash
+minecraft-pinger --host mc.hypixel.net --port 25565 --verbose --timeout 15
+```
+
 ## Output
 
-The tool outputs the raw JSON response from the Minecraft server, which typically includes:
+When using the `--verbose` flag, the tool outputs the raw JSON response from the Minecraft server, which typically
+includes:
 
 ```json
 {
@@ -218,10 +233,18 @@ Code is distributed under the MIT license
 - Ensure the Minecraft server is running
 - Check that the server address and port are correct
 - Verify that the server allows status requests
+- Try increasing the timeout with `--timeout` option
+
+### Connection Timeout
+
+- Check your network connection
+- Verify the server is reachable
+- Increase the timeout value: `minecraft-pinger <server> --timeout 60`
+- Some servers may be slow to respond, especially if they're under a heavy load
 
 ### Invalid Response
 
-- Some servers may have query disabled
+- Some servers may have a query disabled
 - Ensure you're using the correct port (default is `25565`)
 - The server must be a Java Edition Minecraft server (this tool doesn't support Bedrock Edition)
 
